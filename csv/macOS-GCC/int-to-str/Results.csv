@@ -1,0 +1,10 @@
+#  Stage Results
+#**CPU:** Apple M1 (Virtual)
+#**OS:** macOS-24.6.0
+#**Compiler:** GCC-15.2.0
+
+Library,Wins,Ties,Losses
+vn::to_chars,29,1,7
+std::to_chars,6,0,42
+jeaiii::to_text,6,2,32
+fmt::format_to,5,1,35

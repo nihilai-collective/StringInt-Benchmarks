@@ -1,0 +1,9 @@
+#  Stage Results
+#**CPU:** Intel(R) Core(TM) i9-14900KF
+#**OS:** Linux-6.6.87.2-microsoft-standard-WSL2
+#**Compiler:** Clang-23.0.0
+
+Library,Wins,Ties,Losses
+vn::from_chars,52,5,5
+std::from_chars,7,5,50
+strtoll/strtoull,0,0,61

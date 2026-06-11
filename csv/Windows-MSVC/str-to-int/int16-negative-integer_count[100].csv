@@ -1,0 +1,4 @@
+Library,Throughput (MB/s),RSE (%),Time (ms),Bytes Processed,Measured Sample Size,Variance,Mean,Position
+vn::from_chars,359.877,1.60559,0.1157ms,200,30,2172.41,530,Win
+std::from_chars,219.235,0.978118,0.1759ms,200,30,2172.41,870,Loss
+strtoll/strtoull,91.2607,0.266548,0.3917ms,200,30,931.034,2090,Loss

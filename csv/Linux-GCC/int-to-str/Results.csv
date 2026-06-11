@@ -1,0 +1,10 @@
+#  Stage Results
+#**CPU:** Intel(R) Core(TM) i9-14900KF
+#**OS:** Linux-6.6.87.2-microsoft-standard-WSL2
+#**Compiler:** GCC-16.0.1
+
+Library,Wins,Ties,Losses
+vn::to_chars,51,5,6
+jeaiii::to_text,8,5,49
+std::to_chars,0,2,58
+fmt::format_to,0,2,62

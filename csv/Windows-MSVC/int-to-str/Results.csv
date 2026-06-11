@@ -1,0 +1,10 @@
+#  Stage Results
+#**CPU:** Intel(R) Core(TM) i9-14900KF
+#**OS:** Windows-10.0.26200
+#**Compiler:** MSVC-19.44.35228.0
+
+Library,Wins,Ties,Losses
+vn::to_chars,49,7,2
+jeaiii::to_text,5,7,47
+fmt::format_to,3,0,61
+std::to_chars,0,0,62
