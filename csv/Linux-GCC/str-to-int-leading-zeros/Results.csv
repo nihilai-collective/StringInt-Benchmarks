@@ -1,0 +1,9 @@
+# str-to-int-leading-zeros Stage Results
+#**CPU:** Intel(R) Core(TM) i9-14900KF
+#**OS:** Linux-6.6.87.2-microsoft-standard-WSL2
+#**Compiler:** GCC-16.0.1
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,244.975,0.626697,104156,60,41.2031,48,1,15
+std::from_chars,194.801,0.717254,104156,60,49.8438,15,1,48
+strtoll/strtoull,134.443,0.585937,104156,60,41.25,0,0,64

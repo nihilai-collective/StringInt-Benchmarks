@@ -1,0 +1,9 @@
+# str-to-int Stage Results
+#**CPU:** Intel(R) Core(TM) i9-14900KF
+#**OS:** Windows-10.0.26200
+#**Compiler:** MSVC-19.44.35228.0
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,340.948,0.661821,104156,60,35.5,57,3,4
+std::from_chars,287.286,0.681028,104156,60,55.7969,4,3,57
+strtoll/strtoull,130.712,0.509718,104156,60,36.2969,0,0,64

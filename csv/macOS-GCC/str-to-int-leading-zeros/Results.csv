@@ -1,0 +1,9 @@
+# str-to-int-leading-zeros Stage Results
+#**CPU:** Apple M1 (Virtual)
+#**OS:** macOS-24.6.0
+#**Compiler:** GCC-15.2.0
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,196.703,1.46134,104156,60,60.8594,50,7,7
+std::from_chars,117.442,1.70459,104156,60,57.9062,7,7,50
+strtoll/strtoull,97.0984,1.2377,104156,60,54.4219,0,0,64

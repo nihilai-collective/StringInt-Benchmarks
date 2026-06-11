@@ -1,0 +1,4 @@
+Library,Throughput (MB/s),Throughput Deviation (%),Bytes Processed,Measured Executions,Iterations to Stabilize,Position
+vn::from_chars,518.281,0.380256,80000,60,52,Win
+std::from_chars,316.137,1.89394,80000,60,60,Loss
+strtoll/strtoull,246.82,1.25846,80000,60,59,Loss

@@ -1,0 +1,10 @@
+# int-to-str Stage Results
+#**CPU:** Intel(R) Core(TM) i9-14900KF
+#**OS:** Linux-6.6.87.2-microsoft-standard-WSL2
+#**Compiler:** GCC-16.0.1
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::to_chars,2073.67,0.750725,257012,60,80.8438,53,4,7
+jeaiii::to_text,1725.01,0.755435,257011,60,71.2188,7,4,53
+std::to_chars,1066.13,0.785825,257013,60,61.5156,0,0,64
+fmt::format_to,1341.52,0.598444,257011,60,51.9688,0,1,63

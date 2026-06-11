@@ -1,0 +1,9 @@
+# str-to-int Stage Results
+#**CPU:** Intel(R) Core(TM) i9-14900KF
+#**OS:** Linux-6.6.87.2-microsoft-standard-WSL2
+#**Compiler:** GCC-16.0.1
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,498.349,0.601677,104156,60,31.0781,60,2,2
+std::from_chars,414.627,0.806195,104156,60,39.1406,2,2,60
+strtoll/strtoull,232.995,0.68771,104156,60,37.0469,0,0,64

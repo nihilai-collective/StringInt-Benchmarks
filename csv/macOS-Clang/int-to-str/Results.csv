@@ -1,0 +1,10 @@
+# int-to-str Stage Results
+#**CPU:** Apple M1 (Virtual)
+#**OS:** macOS-24.6.0
+#**Compiler:** Clang-22.1.7
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::to_chars,1905.23,0.418084,257011,60,77.5938,60,0,4
+jeaiii::to_text,1454.65,0.368075,257015,60,104.781,4,0,60
+fmt::format_to,1152.25,0.353666,257010,60,79.2344,0,0,64
+std::to_chars,1373.43,0.38239,257014,60,76,0,0,64
