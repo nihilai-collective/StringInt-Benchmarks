@@ -1,0 +1,198 @@
+name: Benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - benchmarking-newer
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: ubuntu-latest
+            compiler: clang
+            name: "Ubuntu Clang"
+            branch: temp-ubuntu-clang
+            commit_msg: "Updates - Ubuntu-Clang"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: ubuntu-latest
+            compiler: gcc
+            name: "Ubuntu GNU"
+            branch: temp-ubuntu-gnu
+            commit_msg: "Updates - Ubuntu-GNU"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: macos-latest
+            compiler: clang
+            name: "macOS Clang"
+            branch: temp-macos-clang
+            commit_msg: "Updates - macOS-Clang"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: macos-latest
+            compiler: gcc
+            name: "macOS GNU"
+            branch: temp-macos-gnu
+            commit_msg: "Updates - macOS-GNU"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: windows-latest
+            compiler: msvc
+            name: "Windows MSVC"
+            branch: temp-windows-msvc
+            commit_msg: "Updates - Windows-MSVC"
+            install_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/Install
+            run_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/Build/Release
+            work_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/
+
+    runs-on: ${{ matrix.config.os }}
+    name: Build on ${{ matrix.config.name }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Clang (Ubuntu)
+      if: matrix.config.os == 'ubuntu-latest' && matrix.config.compiler == 'clang'
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod u+x llvm.sh
+        DEV_VERSION=$(awk -F'[][]' '/LLVM_VERSION_PATTERNS/ {print $2}' llvm.sh | sort -n | tail -n 1)
+        sudo ./llvm.sh $DEV_VERSION
+        echo "CXX_BIN=/usr/bin/clang++-$DEV_VERSION" >> $GITHUB_ENV
+
+    - name: Setup GCC (Ubuntu)
+      if: matrix.config.os == 'ubuntu-latest' && matrix.config.compiler == 'gcc'
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt-get update
+        DEV_VERSION=$(apt-cache search '^g\+\+-[0-9]+$' | awk '{print $1}' | sort -V | tail -n 1 | sed 's/g++-//')
+        sudo apt-get install -y gcc-$DEV_VERSION g++-$DEV_VERSION
+        echo "CXX_BIN=/usr/bin/g++-$DEV_VERSION" >> $GITHUB_ENV
+
+    - name: Setup Clang (macOS)
+      if: matrix.config.os == 'macos-latest' && matrix.config.compiler == 'clang'
+      run: |
+        brew install llvm
+        echo "CXX_BIN=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
+
+    - name: Setup GCC (macOS)
+      if: matrix.config.os == 'macos-latest' && matrix.config.compiler == 'gcc'
+      run: |
+        brew install gcc
+        GCC_VERSION=$(brew list --versions gcc | awk '{print $2}' | cut -d. -f1)
+        echo "CXX_BIN=g++-$GCC_VERSION" >> $GITHUB_ENV
+
+    - name: Setup MSVC (Windows)
+      if: matrix.config.compiler == 'msvc'
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        update-environment-variables: true
+
+    - name: Install Python deps
+      shell: bash
+      run: |
+        if [ "${{ matrix.config.compiler }}" != "msvc" ]; then SUDO="sudo"; else SUDO=""; fi
+        $SUDO python -m pip install seaborn matplotlib pandas --break-system-packages || python -m pip install seaborn matplotlib pandas
+
+    - name: Configure CMake (Unix)
+      if: matrix.config.compiler != 'msvc'
+      run: cmake -S . -B ./Build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=${{ env.CXX_BIN }}
+
+    - name: Configure CMake (Windows)
+      if: matrix.config.compiler == 'msvc'
+      run: cmake -S . -B ./Build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{ matrix.config.install_path }}
+
+    - name: Build
+      working-directory: ./Build
+      run: cmake --build . --config=Release -v
+
+    - name: Install (Unix)
+      if: matrix.config.compiler != 'msvc'
+      run: |
+        sudo cmake --install ./Build --config=Release
+        sudo chmod +x ${{ matrix.config.install_path }}
+
+    - name: Install (Windows)
+      if: matrix.config.compiler == 'msvc'
+      working-directory: ./Build
+      run: cmake --install . --config=Release
+
+    - name: Run (Unit)
+      if: matrix.config.os != 'windows-latest'
+      run: |
+           sudo chmod +x /usr/local/bin/StringInt-Benchmarks
+           sudo /usr/local/bin/StringInt-Benchmarks
+      continue-on-error: true
+
+    - name: Run (Windows)
+      if: matrix.config.compiler == 'msvc'
+      run: |
+        & "${{ matrix.config.install_path }}/bin/StringInt-Benchmarks.exe"
+      continue-on-error: true
+
+    - name: Commit and push to temp branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      working-directory: ${{ matrix.config.work_path }}
+      shell: bash
+      run: |
+        if [ "${{ matrix.config.compiler }}" != "msvc" ]; then SUDO="sudo"; else SUDO=""; fi
+        $SUDO git config --global user.email "40668522+RealTimeChris@users.noreply.github.com"
+        $SUDO git config --global user.name "RealTimeChris"
+        $SUDO git checkout -b ${{ matrix.config.branch }}
+        $SUDO git add .
+        if $SUDO git diff-index --quiet HEAD --; then
+          echo "No changes detected. Skipping commit and push."
+        else
+          $SUDO git commit -m "${{ matrix.config.commit_msg }}"
+          $SUDO git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/nihilai-collective/StringInt-Benchmarks.git ${{ matrix.config.branch }}
+        fi
+
+  Merge-Branches:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Merge all temporary branches into the benchmarking branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        sudo git config --global user.email "40668522+RealTimeChris@users.noreply.github.com"
+        sudo git config --global user.name "RealTimeChris"
+        sudo git fetch origin
+        sudo git config pull.ff only
+        sudo git checkout benchmarking-newer
+        sudo git pull -f origin benchmarking-newer
+        sudo git merge origin/temp-windows-msvc --no-ff
+        sudo git merge origin/temp-ubuntu-gnu --no-ff
+        sudo git merge origin/temp-ubuntu-clang --no-ff
+        sudo git merge origin/temp-macos-gnu --no-ff
+        sudo git merge origin/temp-macos-clang --no-ff
+        sudo git checkout --orphan newBranch
+        sudo git add .
+        sudo git commit -m "Updating necessary files."
+        sudo git branch -m benchmarking
+        sudo git push origin benchmarking -f
+
+    - name: Delete temporary branches
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        sudo git push origin --delete temp-windows-msvc
+        sudo git push origin --delete temp-ubuntu-gnu
+        sudo git push origin --delete temp-ubuntu-clang
+        sudo git push origin --delete temp-macos-gnu
+        sudo git push origin --delete temp-macos-clang
