@@ -15,27 +15,26 @@
 #include <array>
 #include <iostream>
 
-namespace str_to_i_tests {
+namespace benchmarks {
 
-	template<typename v_type_new> struct string_entry {
-		using v_type = v_type_new;
-		char buf[vn::detail::max_digits_v<v_type> + 1]{};
-		uint8_t len{};
-		v_type expected{};
-	};
-
-	template<uint64_t total_size, typename int_type, bool negative> struct string_generator {
+	template<uint64_t total_size, typename int_type, sign_types sign_type> struct string_generator {
 		using entry_type	   = string_entry<int_type>;
 		using test_data_type   = std::vector<entry_type>;
 		using output_data_type = std::vector<int_type>;
 		static test_data_type impl() {
 			test_data_type data(total_size);
 			bnch_swt::random_generator<int_type> rg{};
-			bnch_swt::random_generator<bool> zrg_neg{};
+			bnch_swt::random_generator<bool> rg_neg{};
 			for (auto& e: data) {
 				int_type value = rg.impl();
-				if constexpr (vn::detail::int_types<int_type>) {
-					value *= negative ? zrg_neg.impl() ? -1 : 1 : 1;
+				if constexpr (sign_type == sign_types::mixed) {
+					if constexpr (vn::detail::int_types<int_type>) {
+						value *= rg_neg.impl() ? -1 : 1;
+					}
+				} else if constexpr (sign_type == sign_types::negative) {
+					value = value < 0 ? value : value *= -1;
+				} else if constexpr (sign_type == sign_types::positive) {
+					value = value > 0 ? value : value *= -1;
 				}
 				char* end  = std::to_chars(e.buf, e.buf + vn::detail::max_digits_v<int_type> + 1, value).ptr;
 				e.len	   = static_cast<uint8_t>(end - e.buf);
@@ -88,7 +87,7 @@ namespace str_to_i_tests {
 		}
 	};
 
-	struct verify_correctness {
+	struct verify_correctness_str_to_i {
 		template<typename int_type> static void impl(const std::vector<string_entry<int_type>>& test_data, const char* test_label) {
 			uint64_t vn_correct{}, vn_incorrect{};
 			uint64_t strto_incorrect{}, total_incorrect{};
@@ -128,27 +127,24 @@ namespace str_to_i_tests {
 		}
 	};
 
-	static constexpr uint64_t max_leading_zeros = 20;
-
-	template<typename v_type_new> struct leading_zero_string_entry {
-		using v_type = v_type_new;
-		char buf[vn::detail::max_digits_v<v_type> + max_leading_zeros + 2]{};
-		uint8_t len{};
-		v_type expected{};
-	};
-
-	template<uint64_t total_size, typename int_type, bool negative> struct leading_zero_string_generator {
+	template<uint64_t total_size, typename int_type, sign_types sign_type> struct leading_zero_string_generator {
 		using entry_type	   = leading_zero_string_entry<int_type>;
 		using test_data_type   = std::vector<entry_type>;
 		using output_data_type = std::vector<int_type>;
 		static test_data_type impl() {
 			test_data_type data(total_size);
 			bnch_swt::random_generator<uint64_t> zrg{};
-			bnch_swt::random_generator<bool> zrg_neg{};
+			bnch_swt::random_generator<bool> rg_neg{};
 			for (auto& e: data) {
 				int_type value = zrg.impl();
-				if constexpr (vn::detail::int_types<int_type>) {
-					value *= negative ? zrg_neg.impl() ? -1 : 1 : 1;
+				if constexpr (sign_type == sign_types::mixed) {
+					if constexpr (vn::detail::int_types<int_type>) {
+						value *= rg_neg.impl() ? -1 : 1;
+					}
+				} else if constexpr (sign_type == sign_types::negative) {
+					value = value < 0 ? value : value *= -1;
+				} else if constexpr (sign_type == sign_types::positive) {
+					value = value > 0 ? value : value *= -1;
 				}
 				uint64_t num_zeros = zrg.impl(uint64_t(1), max_leading_zeros);
 				char* p			   = e.buf;

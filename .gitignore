@@ -34,3 +34,6 @@ out/
 .vs/
 Build/
 Install/
+Build-Gen/
+pgo-data/
+llvm.sh

@@ -50,7 +50,7 @@ jobs:
             branch: temp-windows-msvc
             commit_msg: "Updates - Windows-MSVC"
             install_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/Install
-            run_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/Build/Release
+            run_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/Build-Use/Release
             work_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/
 
     runs-on: ${{ matrix.config.os }}
@@ -67,6 +67,7 @@ jobs:
         DEV_VERSION=$(awk -F'[][]' '/LLVM_VERSION_PATTERNS/ {print $2}' llvm.sh | sort -n | tail -n 1)
         sudo ./llvm.sh $DEV_VERSION
         echo "CXX_BIN=/usr/bin/clang++-$DEV_VERSION" >> $GITHUB_ENV
+        echo "LLVM_PROFDATA_BIN=/usr/bin/llvm-profdata-$DEV_VERSION" >> $GITHUB_ENV
 
     - name: Setup GCC (Ubuntu)
       if: matrix.config.os == 'ubuntu-latest' && matrix.config.compiler == 'gcc'
@@ -82,6 +83,7 @@ jobs:
       run: |
         brew install llvm
         echo "CXX_BIN=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
+        echo "LLVM_PROFDATA_BIN=$(brew --prefix llvm)/bin/llvm-profdata" >> $GITHUB_ENV
 
     - name: Setup GCC (macOS)
       if: matrix.config.os == 'macos-latest' && matrix.config.compiler == 'gcc'
@@ -105,15 +107,58 @@ jobs:
         if [ "${{ matrix.config.compiler }}" != "msvc" ]; then SUDO="sudo"; else SUDO=""; fi
         $SUDO python -m pip install seaborn matplotlib pandas --break-system-packages || python -m pip install seaborn matplotlib pandas
 
-    - name: Configure CMake (Unix)
+    - name: Configure CMake - PGO Generate (Unix)
       if: matrix.config.compiler != 'msvc'
-      run: cmake -S . -B ./Build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=${{ env.CXX_BIN }}
+      run: cmake -S . -B ./Build-Gen -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=${{ env.CXX_BIN }} -DPGO_MODE=GENERATE -DPGO_DATA_DIR=${{ github.workspace }}/pgo-data
 
-    - name: Configure CMake (Windows)
+    - name: Configure CMake - PGO Generate (Windows)
       if: matrix.config.compiler == 'msvc'
-      run: cmake -S . -B ./Build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{ matrix.config.install_path }}
+      shell: bash
+      run: cmake -S . -B ./Build-Gen -DCMAKE_BUILD_TYPE=Release -DPGO_MODE=GENERATE "-DPGO_DATA_DIR=${{ matrix.config.work_path }}/pgo-data"
 
-    - name: Build
+    - name: Build - PGO Generate
+      working-directory: ./Build-Gen
+      run: cmake --build . --config=Release -v
+
+    - name: Training run (Unix)
+      if: matrix.config.compiler != 'msvc'
+      shell: bash
+      env:
+        LLVM_PROFILE_FILE: ${{ github.workspace }}/pgo-data/default_%m_%p.profraw
+      run: |
+        BIN=$(find ./Build-Gen -name StringInt-Benchmarks -type f | head -n1)
+        echo "Found binary: $BIN"
+        chmod +x "$BIN"
+        "$BIN"
+        echo "Profiles after run:"
+        ls -la ${{ github.workspace }}/pgo-data/
+      continue-on-error: false
+
+    - name: Training run (Windows)
+      if: matrix.config.compiler == 'msvc'
+      shell: bash
+      run: |
+        BIN=$(find ./Build-Gen -name 'StringInt-Benchmarks.exe' | head -n1)
+        "$BIN"
+      continue-on-error: true
+
+    - name: Merge Clang profiles
+      if: matrix.config.compiler == 'clang'
+      shell: bash
+      run: |
+        ls -la ${{ github.workspace }}/pgo-data || true
+        "${{ env.LLVM_PROFDATA_BIN }}" merge -output=${{ github.workspace }}/pgo-data/default.profdata ${{ github.workspace }}/pgo-data/*.profraw
+
+    - name: Configure CMake - PGO Use (Unix)
+      if: matrix.config.compiler != 'msvc'
+      run: cmake -S . -B ./Build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=${{ env.CXX_BIN }} -DPGO_MODE=USE -DPGO_DATA_DIR=${{ github.workspace }}/pgo-data
+
+    - name: Configure CMake - PGO Use (Windows)
+      if: matrix.config.compiler == 'msvc'
+      shell: bash
+      run: cmake -S . -B ./Build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="${{ matrix.config.install_path }}" -DPGO_MODE=USE "-DPGO_DATA_DIR=${{ matrix.config.work_path }}/pgo-data"
+
+    - name: Build - PGO Use
       working-directory: ./Build
       run: cmake --build . --config=Release -v
 
@@ -128,7 +173,7 @@ jobs:
       working-directory: ./Build
       run: cmake --install . --config=Release
 
-    - name: Run (Unit)
+    - name: Run (Unix)
       if: matrix.config.os != 'windows-latest'
       run: |
            sudo chmod +x /usr/local/bin/StringInt-Benchmarks

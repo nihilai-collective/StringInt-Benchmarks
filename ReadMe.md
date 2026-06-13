@@ -56,13 +56,7 @@ Here's a few benchmarks on a few common operating system/compiler platforms. Alt
 2. A C++20 compliant compiler.
 3. Python3 and Seaborn for generating the graphs.
 
-### Build Instructions:
----
-1. Clone the repo.
-2. Cd into the repo's folder and enter `cmake -S . -B ./Build -DCMAKE_BUILD_TYPE=RELEASE_OR_DEBUG -DCMAKE_CXX_COMPILER=PATH_TO_COMPILER_EXECUTABLE` (NOTE: Optionally set a manual installation path by setting `-DCMAKE_INSTALL_PREFIX=CUSTOM_INSTALLATION_PATH`)
-3. Then enter `cmake --build ./Build --config=RELEASE_OR_DEBUG`
-4. Then enter `cmake --install ./Build`
-5. Run the executable from wherever it was installed to!
+[Compilation Method](./Compilation%20Method.md)
 
 #### Note:
 These benchmarks were executed using the CPU benchmark library [benchmarksuite](https://github.com/RealTimeChris/benchmarksuite)

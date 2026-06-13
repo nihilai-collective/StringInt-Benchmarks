@@ -6,18 +6,19 @@
 #include "str_to_i.hpp"
 
 int32_t main() {
-	benchmarks::tests<"int-to-str", vn::detail::conversion_classes::i_to_str, max_executions, measured_executions, i_to_str_tests::verify_correctness,
-		i_to_str_tests::digit_generator, benchmarks::test_holder<"std::to_chars", i_to_str_tests::conversion_benchmark<i_to_str_tests::std_op>>,
-		benchmarks::test_holder<"jeaiii::to_text", i_to_str_tests::conversion_benchmark<i_to_str_tests::jeaiii_op>>,
-		benchmarks::test_holder<"fmt::format_to", i_to_str_tests::conversion_benchmark<i_to_str_tests::fmt_format_to_op>>,
-		benchmarks::test_holder<"vn::to_chars", i_to_str_tests::conversion_benchmark<i_to_str_tests::vn_op>>>::impl();
-	benchmarks::tests<"str-to-int-leading-zeros", vn::detail::conversion_classes::str_to_i, max_executions, measured_executions, str_to_i_tests::verify_correctness_leading_zeros,
-		str_to_i_tests::leading_zero_string_generator, benchmarks::test_holder<"std::from_chars", str_to_i_tests::from_chars_benchmark<str_to_i_tests::std_from_op>>,
-		benchmarks::test_holder<"strtoll/strtoull", str_to_i_tests::from_chars_benchmark<str_to_i_tests::strto_op>>,
-		benchmarks::test_holder<"vn::from_chars", str_to_i_tests::from_chars_benchmark<str_to_i_tests::vn_from_op>>>::impl();
-	benchmarks::tests<"str-to-int", vn::detail::conversion_classes::str_to_i, max_executions, measured_executions, str_to_i_tests::verify_correctness,
-		str_to_i_tests::string_generator, benchmarks::test_holder<"std::from_chars", str_to_i_tests::from_chars_benchmark<str_to_i_tests::std_from_op>>,
-		benchmarks::test_holder<"strtoll/strtoull", str_to_i_tests::from_chars_benchmark<str_to_i_tests::strto_op>>,
-		benchmarks::test_holder<"vn::from_chars", str_to_i_tests::from_chars_benchmark<str_to_i_tests::vn_from_op>>>::impl();
+	benchmarks::tests<"int-to-str", vn::detail::conversion_classes::i_to_str, benchmarks::verify_correctness_i_to_str, benchmarks::digit_generator,
+		benchmarks::test_holder<"std::to_chars", benchmarks::std_op>, benchmarks::test_holder<"jeaiii::to_text", benchmarks::jeaiii_op>,
+		benchmarks::test_holder<"fmt::format_to", benchmarks::fmt_format_to_op>, benchmarks::test_holder<"vn::to_chars", benchmarks::vn_op>>::impl();
+
+	benchmarks::tests<"str-to-int-leading-zeros", vn::detail::conversion_classes::str_to_i, benchmarks::verify_correctness_leading_zeros,
+		benchmarks::leading_zero_string_generator, benchmarks::test_holder<"std::from_chars", benchmarks::std_from_op, benchmarks::parse_subject_type>,
+		benchmarks::test_holder<"strtoll/strtoull", benchmarks::strto_op, benchmarks::parse_subject_type>,
+		benchmarks::test_holder<"vn::from_chars", benchmarks::vn_from_op, benchmarks::parse_subject_type>>::impl();
+
+	benchmarks::tests<"str-to-int", vn::detail::conversion_classes::str_to_i, benchmarks::verify_correctness_str_to_i, benchmarks::string_generator,
+		benchmarks::test_holder<"std::from_chars", benchmarks::std_from_op, benchmarks::parse_subject_type>,
+		benchmarks::test_holder<"strtoll/strtoull", benchmarks::strto_op, benchmarks::parse_subject_type>,
+		benchmarks::test_holder<"vn::from_chars", benchmarks::vn_from_op, benchmarks::parse_subject_type>>::impl();
+
 	return 0;
 }
