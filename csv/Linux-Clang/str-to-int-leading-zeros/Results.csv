@@ -1,0 +1,9 @@
+# str-to-int-leading-zeros Stage Results
+#**CPU:** AMD EPYC 9V74 80-Core Processor
+#**OS:** Linux-6.17.0-1018-azure
+#**Compiler:** Clang-23.0.0
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,181.608,0.285264,104156,60,42.7344,51,2,11
+std::from_chars,142.2,0.431884,104156,60,45.5625,11,2,51
+strtoll/strtoull,88.0866,0.228877,104156,60,35.9219,0,0,64

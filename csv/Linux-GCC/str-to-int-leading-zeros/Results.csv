@@ -1,0 +1,9 @@
+# str-to-int-leading-zeros Stage Results
+#**CPU:** AMD EPYC 7763 64-Core Processor
+#**OS:** Linux-6.17.0-1018-azure
+#**Compiler:** GCC-16.0.1
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,173.269,0.313369,104156,60,30.8906,50,0,14
+std::from_chars,134.276,0.485017,104156,60,38.7344,14,0,50
+strtoll/strtoull,76.0957,0.245105,104156,60,35.5156,0,0,64

@@ -1,0 +1,10 @@
+# int-to-str Stage Results
+#**CPU:** AMD EPYC 7763 64-Core Processor
+#**OS:** Linux-6.17.0-1018-azure
+#**Compiler:** GCC-16.0.1
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::to_chars,1318.88,0.412838,257014,60,46.0156,56,1,7
+jeaiii::to_text,1010.56,0.430752,257011,60,48.8906,7,1,56
+std::to_chars,570.429,0.521308,257012,60,52.7031,0,0,64
+fmt::format_to,709.877,0.36299,257014,60,41.875,0,0,64

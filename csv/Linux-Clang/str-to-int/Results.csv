@@ -1,0 +1,9 @@
+# str-to-int Stage Results
+#**CPU:** AMD EPYC 9V74 80-Core Processor
+#**OS:** Linux-6.17.0-1018-azure
+#**Compiler:** Clang-23.0.0
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,393.315,0.286472,104156,60,36.2656,63,1,0
+strtoll/strtoull,167.769,0.212231,104156,60,35.2344,0,0,64
+std::from_chars,290.373,0.528953,104156,60,36.4062,0,1,63

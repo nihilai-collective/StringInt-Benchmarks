@@ -1,0 +1,9 @@
+# str-to-int-leading-zeros Stage Results
+#**CPU:** Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
+#**OS:** Windows-10.0.26100
+#**Compiler:** MSVC-19.51.36246.0
+
+Library,Average Throughput (MB/s),Average Throughput Deviation (%),Average Bytes Processed,Average Measured Executions,Average Iterations to Stabilize,Wins,Ties,Losses
+vn::from_chars,143.156,0.338654,104156,60,34.125,48,0,16
+std::from_chars,121.394,0.449207,104156,60,40.7812,16,0,48
+strtoll/strtoull,52.8985,0.488023,104156,60,34.3438,0,0,64

@@ -1,0 +1,5 @@
+Library,Throughput (MB/s),Throughput Deviation (%),Bytes Processed,Measured Executions,Iterations to Stabilize,Position
+vn::to_chars,1200.77,0.342199,56608,60,57,Win
+jeaiii::to_text,1101.37,0.342232,56607,60,20,Loss
+fmt::format_to,914.451,0.346465,56606,60,35,Loss
+std::to_chars,815.38,0.46032,56608,60,60,Loss
