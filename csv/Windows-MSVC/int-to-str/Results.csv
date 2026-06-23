@@ -1,0 +1,15 @@
+# int-to-str Stage Results
+#CPU: Intel(R) Core(TM) i9-14900KF-AVX2
+#OS: Windows-10.0.26200
+#Compiler: MSVC-19.44.35228.0
+
+# int-to-str Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1800,1,6,2.5,100000,30
+
+Library,Wins,Ties,Losses
+vn::to_chars,50,3,0
+fmt::format_to,6,1,56
+jeaiii::to_text,4,2,48
+std::to_chars,1,0,62

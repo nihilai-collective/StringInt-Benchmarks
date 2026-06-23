@@ -1,0 +1,14 @@
+# str-to-int Stage Results
+#CPU: Intel(R) Core(TM) i9-14900KF-AVX2
+#OS: Linux-6.6.87.2-microsoft-standard-WSL2
+#Compiler: GCC-16.0.1
+
+# str-to-int Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1800,1,6,2.5,100000,30
+
+Library,Wins,Ties,Losses
+vn::from_chars,53,0,11
+std::from_chars,11,0,53
+strtoll/strtoull,0,0,64

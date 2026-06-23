@@ -1,0 +1,15 @@
+# int-to-str Stage Results
+#CPU: Apple M1 (Virtual)-NEON
+#OS: macOS-25.4.0
+#Compiler: GCC-16.1.0
+
+# int-to-str Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1800,1,6,2.5,100000,30
+
+Library,Wins,Ties,Losses
+vn::to_chars,31,5,2
+jeaiii::to_text,6,5,30
+std::to_chars,4,0,43
+fmt::format_to,1,6,33

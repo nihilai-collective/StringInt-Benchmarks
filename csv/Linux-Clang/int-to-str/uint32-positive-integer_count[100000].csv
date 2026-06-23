@@ -1,0 +1,5 @@
+Library,Throughput (MB/s),RSE (%),Window Duration,File Size (Bytes),Window Samples (k),Variance,Latency / Run (ns),Cycles/Byte,Position
+vn::to_chars,3663.96,0.568298,46.6711ms,974018,30,6.22739e+07,253522,0.828826,Win
+jeaiii::to_text,3209.79,0.28009,103.189ms,974018,30,1.97105e+07,289395,0.9465,Loss
+fmt::format_to,2481.13,0.422898,68.1824ms,974018,30,7.52015e+07,374384,1.22463,Loss
+std::to_chars,1797.94,1.15834,91.7627ms,974018,30,1.07443e+09,516646,1.68996,Loss

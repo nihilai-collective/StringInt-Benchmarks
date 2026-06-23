@@ -1,0 +1,14 @@
+# str-to-int-leading-zeros Stage Results
+#CPU: Intel(R) Core(TM) i9-14900KF-AVX2
+#OS: Linux-6.6.87.2-microsoft-standard-WSL2
+#Compiler: GCC-16.0.1
+
+# str-to-int-leading-zeros Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1800,1,6,2.5,100000,30
+
+Library,Wins,Ties,Losses
+vn::from_chars,57,0,7
+std::from_chars,7,0,57
+strtoll/strtoull,0,0,64
