@@ -1,0 +1,9 @@
+#  Stage Results
+#**CPU:** AMD EPYC 7763 64-Core Processor
+#**OS:** Linux-6.17.0-1018-azure
+#**Compiler:** GCC-16.0.1
+
+Library,Wins,Ties,Losses
+vn::from_chars,64,0,0
+strtoll/strtoull,0,0,64
+std::from_chars,0,0,64

@@ -1,0 +1,10 @@
+#  Stage Results
+#**CPU:** AMD EPYC 7763 64-Core Processor
+#**OS:** Linux-6.17.0-1018-azure
+#**Compiler:** Clang-23.0.0
+
+Library,Wins,Ties,Losses
+vn::to_chars,61,2,1
+jeaiii::to_text,1,2,61
+std::to_chars,0,1,63
+fmt::format_to,0,1,63

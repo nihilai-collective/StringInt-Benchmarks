@@ -1,0 +1,9 @@
+#  Stage Results
+#**CPU:** Apple M1 (Virtual)
+#**OS:** macOS-24.6.0
+#**Compiler:** Clang-22.1.7
+
+Library,Wins,Ties,Losses
+vn::from_chars,59,2,2
+std::from_chars,3,2,56
+strtoll/strtoull,0,0,63
