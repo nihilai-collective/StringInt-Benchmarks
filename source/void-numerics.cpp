@@ -1,11 +1,12 @@
 ﻿// SPDX-License-Identifier: MIT
 // Copyright (c) 2026 Nihilai Collective Corp
-// src/benchmarks/void-numerics.cpp
+// source/void-numerics.cpp
 
 #include "i_to_str.hpp"
 #include "str_to_i.hpp"
 
 int32_t main() {
+	bnch_swt::pin_for_benchmark();
 	benchmarks::tests<"int-to-str", vn::detail::conversion_classes::i_to_str, benchmarks::verify_correctness_i_to_str, benchmarks::digit_generator,
 		benchmarks::test_holder<"std::to_chars", benchmarks::std_op>, benchmarks::test_holder<"jeaiii::to_text", benchmarks::jeaiii_op>,
 		benchmarks::test_holder<"fmt::format_to", benchmarks::fmt_format_to_op>, benchmarks::test_holder<"vn::to_chars", benchmarks::vn_op>>::impl();

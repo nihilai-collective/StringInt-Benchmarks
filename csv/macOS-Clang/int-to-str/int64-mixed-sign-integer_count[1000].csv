@@ -1,5 +1,0 @@
-Library,Throughput (MB/s),RSE (%),Time (ms),Bytes Processed,Measured Sample Size,Variance,Mean,Position
-vn::to_chars,5973.45,0.542651,0.575917ms,19374,30,8451.82,3093.1,Win
-jeaiii::to_text,3092.28,0.240046,1.19221ms,19374,30,6171.48,5975.03,Loss
-std::to_chars,2937.28,0.0672068,1.30725ms,19374,30,536.161,6290.33,Loss
-fmt::format_to,2100.57,0.319837,3.98042ms,19374,30,23743.3,8795.93,Loss

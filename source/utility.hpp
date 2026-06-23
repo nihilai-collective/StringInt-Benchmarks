@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 Nihilai Collective Corp
-// src/tests/utility.hpp
+// source/utility.hpp
 
 #pragma once
 
-#include <void-numerics>
 #include <bnch_swt>
+#include <void-numerics>
 #include <fmt/format.h>
 #include <to_text_from_integer.h>
 #include <fmt/compile.h>
@@ -24,7 +24,7 @@ static constexpr uint64_t measured_iteration_count{ 20 };
 static constexpr bool cache_clearing{ false };
 static std::string base_path{ PGO_BASE_PATH };
 #elif defined(NDEBUG)
-static constexpr uint64_t max_iteration_count{ 1200 };
+static constexpr uint64_t max_iteration_count{ 1800 };
 static constexpr uint64_t measured_iteration_count{ 60 };
 static constexpr bool cache_clearing{ true };
 static std::string base_path{ BASE_PATH };
