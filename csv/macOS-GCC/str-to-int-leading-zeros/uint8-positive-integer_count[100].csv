@@ -1,0 +1,2 @@
+Library,Throughput (MB/s),RSE (%),Window Duration,File Size (Bytes),Window Samples (k),Variance,Latency / Run (ns),Position
+strtoll/strtoull,47.7601,0.952284,0.375808ms,100,30,10847.3,1996.8,Win

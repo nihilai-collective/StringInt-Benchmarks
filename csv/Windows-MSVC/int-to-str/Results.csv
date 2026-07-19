@@ -1,0 +1,15 @@
+# int-to-str Stage Results
+#CPU: AMD EPYC 9V74 80-Core Processor-AVX2
+#OS: Windows-10.0.26100
+#Compiler: MSVC-19.51.36248.0
+
+# int-to-str Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1800,1,6,2.5,100000,30
+
+Library,Wins,Ties,Losses
+vn::to_chars,59,1,2
+jeaiii::to_text,4,2,56
+std::to_chars,0,0,62
+fmt::format_to,0,1,62

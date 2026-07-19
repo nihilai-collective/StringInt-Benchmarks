@@ -1,0 +1,15 @@
+# int-to-str Stage Results
+#CPU: AMD EPYC 7763 64-Core Processor-AVX2
+#OS: Linux-6.17.0-1020-azure
+#Compiler: GCC-16.0.1
+
+# int-to-str Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1800,1,6,2.5,100000,30
+
+Library,Wins,Ties,Losses
+vn::to_chars,54,2,8
+jeaiii::to_text,8,2,54
+std::to_chars,0,0,64
+fmt::format_to,0,0,62

@@ -1,0 +1,4 @@
+Library,Throughput (MB/s),RSE (%),Window Duration,File Size (Bytes),Window Samples (k),Variance,Latency / Run (ns),Cycles/Byte,Position
+vn::from_chars,120.494,0.368795,28.6937ms,20000,30,1.02239e+07,158294,19.35,Win
+std::from_chars,98.8095,0.657725,34.7572ms,20000,30,4.83585e+07,193033,23.5973,Loss
+strtoll/strtoull,56.2492,0.227615,61.2752ms,20000,30,1.7871e+07,339089,41.456,Loss

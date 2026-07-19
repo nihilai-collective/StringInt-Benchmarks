@@ -1,0 +1,15 @@
+# int-to-str Stage Results
+#CPU: AMD EPYC 9V74 80-Core Processor-AVX2
+#OS: Linux-6.17.0-1020-azure
+#Compiler: Clang-23.0.0
+
+# int-to-str Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1800,1,6,2.5,100000,30
+
+Library,Wins,Ties,Losses
+vn::to_chars,63,1,0
+std::to_chars,0,1,63
+fmt::format_to,0,1,62
+jeaiii::to_text,0,1,63
