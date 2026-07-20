@@ -1,19 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 Nihilai Collective Corp
-// src/benchmarks/str_to_i.hpp
+// source/str_to_i.hpp
 
 #pragma once
 
-#include <bnch_swt>
-#include <void-numerics>
 #include "utility.hpp"
-#include <charconv>
-#include <cstring>
-#include <cstdlib>
-#include <limits>
-#include <vector>
-#include <array>
-#include <iostream>
 
 namespace benchmarks {
 

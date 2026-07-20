@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 Nihilai Collective Corp
-// src/benchmarks/i_to_str.hpp
+// source/i_to_str.hpp
 
 #pragma once
 

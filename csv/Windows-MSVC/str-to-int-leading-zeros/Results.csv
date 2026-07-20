@@ -1,9 +1,0 @@
-#  Stage Results
-#**CPU:** Intel(R) Core(TM) i9-14900KF
-#**OS:** Windows-10.0.26200
-#**Compiler:** MSVC-19.44.35228.0
-
-Library,Wins,Ties,Losses
-vn::from_chars,57,4,2
-std::from_chars,3,4,54
-strtoll/strtoull,0,0,62

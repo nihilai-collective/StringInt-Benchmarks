@@ -63,7 +63,7 @@ FetchContent_MakeAvailable(jeaiii_itoa)
 add_library(jeaiii_itoa INTERFACE)
 target_include_directories(jeaiii_itoa INTERFACE ${jeaiii_itoa_SOURCE_DIR}/itoa)
 
-add_executable(StringInt-Benchmarks source/void-numerics.cpp)
+add_executable(StringInt-Benchmarks "source/main.cpp")
 target_link_libraries(
 	StringInt-Benchmarks PRIVATE 
 	void-numerics::void-numerics

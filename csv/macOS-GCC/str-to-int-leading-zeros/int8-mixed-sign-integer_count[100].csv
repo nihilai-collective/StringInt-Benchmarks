@@ -1,2 +1,0 @@
-Library,Throughput (MB/s),RSE (%),Time (ms),Bytes Processed,Measured Sample Size,Variance,Mean,Position
-strtoll/strtoull,46.761,1.94863,0.141056ms,100,30,47381.8,2039.47,Win
