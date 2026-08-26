@@ -1,0 +1,216 @@
+name: Benchmark
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - benchmarking-newer
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      run_tag: ${{ steps.stamp.outputs.run_tag }}
+    steps:
+    - name: Generate unique run tag
+      id: stamp
+      run: echo "run_tag=$(date -u +'%H%M%S')" >> $GITHUB_OUTPUT
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: ubuntu-latest
+            compiler: clang
+            name: "Ubuntu Clang"
+            branch_base: temp-ubuntu-clang
+            commit_msg: "Updates - Ubuntu-Clang"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: ubuntu-latest
+            compiler: gcc
+            name: "Ubuntu GNU"
+            branch_base: temp-ubuntu-gnu
+            commit_msg: "Updates - Ubuntu-GNU"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: macos-latest
+            compiler: clang
+            name: "macOS Clang"
+            branch_base: temp-macos-clang
+            commit_msg: "Updates - macOS-Clang"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: macos-latest
+            compiler: gcc
+            name: "macOS GNU"
+            branch_base: temp-macos-gnu
+            commit_msg: "Updates - macOS-GNU"
+            install_path: /usr/local/bin/
+            run_path: /usr/local/bin/
+            work_path: ${{ github.workspace }}
+          - os: windows-latest
+            compiler: msvc
+            name: "Windows MSVC"
+            branch_base: temp-windows-msvc
+            commit_msg: "Updates - Windows-MSVC"
+            install_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/Install
+            run_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/Build-Use/Release
+            work_path: D:/a/StringInt-Benchmarks/StringInt-Benchmarks/
+
+    runs-on: ${{ matrix.config.os }}
+    name: Build on ${{ matrix.config.name }}
+
+    env:
+      BRANCH_NAME: ${{ matrix.config.branch_base }}-${{ needs.prepare.outputs.run_tag }}
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Setup Clang (Ubuntu)
+      if: matrix.config.os == 'ubuntu-latest' && matrix.config.compiler == 'clang'
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod u+x llvm.sh
+        DEV_VERSION=$(awk -F'[][]' '/LLVM_VERSION_PATTERNS/ {print $2}' llvm.sh | sort -n | tail -n 1)
+        sudo ./llvm.sh $DEV_VERSION
+        echo "CXX_BIN=/usr/bin/clang++-$DEV_VERSION" >> $GITHUB_ENV
+        echo "LLVM_PROFDATA_BIN=/usr/bin/llvm-profdata-$DEV_VERSION" >> $GITHUB_ENV
+        echo "COMPILER_KIND=clang" >> $GITHUB_ENV
+
+    - name: Setup GCC (Ubuntu)
+      if: matrix.config.os == 'ubuntu-latest' && matrix.config.compiler == 'gcc'
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt-get update
+        DEV_VERSION=$(apt-cache search '^g\+\+-[0-9]+$' | awk '{print $1}' | sort -V | tail -n 1 | sed 's/g++-//')
+        sudo apt-get install -y gcc-$DEV_VERSION g++-$DEV_VERSION
+        echo "CXX_BIN=/usr/bin/g++-$DEV_VERSION" >> $GITHUB_ENV
+        echo "COMPILER_KIND=gcc" >> $GITHUB_ENV
+
+    - name: Setup Clang (macOS)
+      if: matrix.config.os == 'macos-latest' && matrix.config.compiler == 'clang'
+      run: |
+        brew install llvm
+        echo "CXX_BIN=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
+        echo "LLVM_PROFDATA_BIN=$(brew --prefix llvm)/bin/llvm-profdata" >> $GITHUB_ENV
+        echo "COMPILER_KIND=clang" >> $GITHUB_ENV
+
+    - name: Setup GCC (macOS)
+      if: matrix.config.os == 'macos-latest' && matrix.config.compiler == 'gcc'
+      run: |
+        brew install gcc
+        GCC_VERSION=$(brew list --versions gcc | awk '{print $2}' | cut -d. -f1)
+        echo "CXX_BIN=g++-$GCC_VERSION" >> $GITHUB_ENV
+        echo "COMPILER_KIND=gcc" >> $GITHUB_ENV
+
+    - name: Setup MSVC (Windows)
+      if: matrix.config.compiler == 'msvc'
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        update-environment-variables: true
+
+    - name: Install Python deps
+      shell: bash
+      run: |
+        if [ "${{ matrix.config.compiler }}" != "msvc" ]; then SUDO="sudo"; else SUDO=""; fi
+        $SUDO python -m pip install seaborn matplotlib pandas --break-system-packages || python -m pip install seaborn matplotlib pandas
+
+    - name: PGO Build + Train (Unix) + Run
+      if: matrix.config.compiler != 'msvc'
+      shell: bash
+      env:
+        WORKSPACE: ${{ github.workspace }}
+      run: |
+        chmod +x ./pgo-build.sh
+        ./pgo-build.sh
+
+    - name: Run
+      if: matrix.config.compiler != 'msvc'
+      shell: bash
+      env:
+        WORKSPACE: ${{ github.workspace }}
+      run: |
+        sudo chmod +x ./Build/StringInt-Benchmarks
+        sudo ./Build/StringInt-Benchmarks
+
+    - name: PGO Build + Train (Windows) + Run
+      if: matrix.config.compiler == 'msvc'
+      shell: pwsh
+      env:
+        WORKSPACE: ${{ matrix.config.work_path }}
+      run: ./pgo-build.ps1
+
+    - name: Run
+      if: matrix.config.compiler == 'msvc'
+      shell: bash
+      env:
+        WORKSPACE: ${{ github.workspace }}
+      run: |
+        ./Install/bin/StringInt-Benchmarks.exe
+
+    - name: Commit and push to temp branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      working-directory: ${{ matrix.config.work_path }}
+      shell: bash
+      run: |
+        if [ "${{ matrix.config.compiler }}" != "msvc" ]; then SUDO="sudo"; else SUDO=""; fi
+        $SUDO git config --global user.email "40668522+RealTimeChris@users.noreply.github.com"
+        $SUDO git config --global user.name "RealTimeChris"
+        $SUDO git checkout -b "$BRANCH_NAME"
+        $SUDO git add .
+        if $SUDO git diff-index --quiet HEAD --; then
+          echo "No changes detected. Skipping commit and push."
+        else
+          $SUDO git commit -m "${{ matrix.config.commit_msg }}"
+          $SUDO git push -f https://${{ secrets.GITHUB_TOKEN }}@github.com/nihilai-collective/StringInt-Benchmarks.git "$BRANCH_NAME"
+        fi
+
+  Merge-Branches:
+    runs-on: ubuntu-latest
+    needs: [prepare, build]
+
+    env:
+      RUN_TAG: ${{ needs.prepare.outputs.run_tag }}
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Merge all temporary branches into the benchmarking branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        sudo git config --global user.email "40668522+RealTimeChris@users.noreply.github.com"
+        sudo git config --global user.name "RealTimeChris"
+        sudo git fetch origin
+        sudo git config pull.ff only
+        sudo git checkout benchmarking-newer
+        sudo git pull -f origin benchmarking-newer
+        sudo git merge origin/temp-windows-msvc-$RUN_TAG --no-ff
+        sudo git merge origin/temp-ubuntu-gnu-$RUN_TAG --no-ff
+        sudo git merge origin/temp-ubuntu-clang-$RUN_TAG --no-ff
+        sudo git merge origin/temp-macos-gnu-$RUN_TAG --no-ff
+        sudo git merge origin/temp-macos-clang-$RUN_TAG --no-ff
+        sudo git checkout --orphan newBranch
+        sudo git add .
+        sudo git commit -m "Updating necessary files."
+        sudo git branch -m benchmarking-$RUN_TAG
+        sudo git push origin benchmarking-$RUN_TAG -f
+
+    - name: Delete temporary branches
+      if: always()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        for suffix in temp-windows-msvc temp-ubuntu-gnu temp-ubuntu-clang temp-macos-gnu temp-macos-clang; do
+          sudo git push origin --delete $suffix-$RUN_TAG || true
+        done
