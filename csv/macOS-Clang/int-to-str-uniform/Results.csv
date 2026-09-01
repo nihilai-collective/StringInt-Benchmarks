@@ -1,0 +1,13 @@
+# int-to-str-uniform Stage Results
+#CPU: Apple M1 (Virtual)-NEON
+#OS: macOS-25.5.0
+#Compiler: Clang-22.1.8
+
+# int-to-str-uniform Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1200,1,6,2.5,100000,1200
+
+Library,Wins,Ties,Losses
+vn::to_chars,53,2,3
+jeaiii::to_text,3,2,53

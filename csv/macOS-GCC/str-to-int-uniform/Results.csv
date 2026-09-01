@@ -1,0 +1,14 @@
+# str-to-int-uniform Stage Results
+#CPU: Apple M1 (Virtual)-NEON
+#OS: macOS-25.5.0
+#Compiler: GCC-16.1.0
+
+# str-to-int-uniform Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1200,1,6,2.5,100000,1200
+
+Library,Wins,Ties,Losses
+vn::from_chars,32,6,23
+std::from_chars,24,7,28
+strtoll/strtoull,0,1,60

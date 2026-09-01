@@ -1,0 +1,14 @@
+# str-to-int-natural Stage Results
+#CPU: Apple M1 (Virtual)-NEON
+#OS: macOS-25.5.0
+#Compiler: Clang-22.1.8
+
+# str-to-int-natural Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold,MaxTimeInS,RseThreshold,MaxK,MinK
+true,60,1200,1,6,2.5,100000,1200
+
+Library,Wins,Ties,Losses
+vn::from_chars,52,2,6
+std::from_chars,8,4,46
+strtoll/strtoull,1,2,60
