@@ -1,0 +1,13 @@
+# int-to-str-uniform-value Stage Results
+#CPU: Intel(R) Core(TM) i9-14900KF-AVX2
+#OS: Windows-10.0.26200
+#Compiler: MSVC-19.51.36257.0
+
+# int-to-str-uniform-value Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold (%),MaxTimeInS,RseThreshold (%),MaxK,MinK
+true,60,1200,2.5,20,5,100000,30
+
+Library,Wins,Ties,Losses
+vn::to_chars,49,3,0
+jeaiii::to_text,0,3,49

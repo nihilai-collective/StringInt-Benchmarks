@@ -1,0 +1,14 @@
+# str-to-int-uniform-value Stage Results
+#CPU: Intel(R) Core(TM) i9-14900KF-AVX2
+#OS: Linux-6.18.40.1-microsoft-standard-WSL2
+#Compiler: GCC-16.1.0
+
+# str-to-int-uniform-value Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,ConvergenceThreshold (%),MaxTimeInS,RseThreshold (%),MaxK,MinK
+true,60,1200,2.5,20,5,100000,30
+
+Library,Wins,Ties,Losses
+vn::from_chars,33,0,0
+std::from_chars,0,0,33
+strtoll/strtoull,0,0,33
