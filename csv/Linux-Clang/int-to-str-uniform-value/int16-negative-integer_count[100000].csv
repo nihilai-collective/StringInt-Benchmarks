@@ -1,0 +1,3 @@
+Library,Throughput (MB/s),RSE (%),Window Duration,File Size (Bytes),Window Samples (k),Variance,Latency / Run (ns),Mean Convergence (%),Cycles/Byte,Instructions/Byte,Branches/Byte,Branch Misses/Byte,Cache References/Byte,Cache Misses/Byte,Position,Converged
+jeaiii::to_text,1569.09,0.22007,423.252ms,566103,48,2.75207e+07,344071,0.0436311,3.21957,7.61533,0.813979,0.0603449,0.0722243,0.0457979,Tie,true
+vn (unchecked core),1556.21,0.379639,428.46ms,566100,30,5.20372e+07,346917,0.0602284,3.24383,5.86362,1.1084,0.0606176,0.072256,0.0452621,Tie,true

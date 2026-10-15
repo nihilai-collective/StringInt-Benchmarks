@@ -1,0 +1,4 @@
+Library,Throughput (MB/s),RSE (%),Window Duration,File Size (Bytes),Window Samples (k),Variance,Latency / Run (ns),Mean Convergence (%),Position,Converged
+vn::from_chars,226.95,1.10097,53.5639ms,10000,48,1.02738e+07,42021.3,0.456446,Win,true
+std::from_chars,209.6,0.335783,54.878ms,10000,30,700256,45499.7,0,Loss,true
+strtoll/strtoull,107.388,0.749846,112.539ms,10000,30,1.33031e+07,88806.4,1.66421,Loss,true

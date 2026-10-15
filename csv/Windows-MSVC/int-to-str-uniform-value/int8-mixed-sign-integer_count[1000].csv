@@ -1,0 +1,3 @@
+Library,Throughput (MB/s),RSE (%),Window Duration,File Size (Bytes),Window Samples (k),Variance,Latency / Run (ns),Mean Convergence (%),Cycles/Byte,Position,Converged
+vn (unchecked core),708.583,0.493851,4.5115ms,2644,48,14822.7,3558.33,0.140318,4.25265,Win,true
+jeaiii::to_text,473.481,0.698289,6.4531ms,2648,30,41609.2,5333.33,0.187852,6.38931,Loss,true
