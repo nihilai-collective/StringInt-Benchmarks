@@ -1,0 +1,14 @@
+# str-to-int-uniform-value Stage Results
+#CPU: INTEL(R) XEON(R) PLATINUM 8573C-AVX512
+#OS: Linux-7.0.0-1017-azure
+#Compiler: Clang-24.0.0
+
+# str-to-int-uniform-value Stage Config
+
+ClearCpuCachesBeforeIterations,MeasuredIterationCount,MaxIterationCount,IncludeNonConvergedResults,ConvergenceThreshold (%),MaxTimeInS,RseThreshold (%),MaxK,MinK
+true,60,1200,true,5,20,10,100000,30
+
+Library,Wins,Ties,Losses
+vn::from_chars,63,1,0
+std::from_chars,0,1,63
+strtoll/strtoull,0,0,64
